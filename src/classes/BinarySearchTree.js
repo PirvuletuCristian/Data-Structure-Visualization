@@ -52,17 +52,17 @@ findMax() {
 
 find(data) {
     let current = this.root;
-    while (current) {
-        if (data === current.data) {
-            return true;
-        }
+    while (current.data !== data) {
         if (data < current.data) {
             current = current.left;
         } else {
             current = current.right;
         }
+        if (current === null) {
+            return null;
+        }
     }
-    return false;
+    return current;
 }
 
 remove(data) {
