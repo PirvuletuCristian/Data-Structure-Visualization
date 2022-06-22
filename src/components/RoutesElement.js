@@ -4,7 +4,7 @@ import Home from '../screens/Home';
 import Algoritm from '../screens/Algoritm';
 import Learn from '../screens/Learn'; 
 import BST from '../algoritmi/BST';
-import BTree from '../algoritmi/BTree';
+import AVL from '../algoritmi/AVL';
 
 export default function RoutesElement() {
   return (
@@ -13,7 +13,7 @@ export default function RoutesElement() {
         <Route path="algoritm" element={<Algoritm />} />
         <Route path="learn" element={<Learn />} />
         <Route path="BST" element={<BST />} />
-        <Route path="BTree" element={<BTree />} />
+        <Route path="avl" element={<AVL />} />
       </Routes>
   )
 }

@@ -10,6 +10,9 @@
     border: none;
     transition: .3 linear;
 }
+h3 {
+    text-align: center;
+}
 body, button {
     font-family: "Poppins", sans-serif;
     font-size: 1rem;
@@ -88,6 +91,7 @@ section .content-algoritm {
     position: relative !important;
     color: hsl(195, 12%, 94%, .7);
     transition: all 0.3s ease .1s;
+    text-decoration: none;
 }
 
 .navbar li a:hover {
@@ -139,4 +143,16 @@ nav ul li a:hover::before {
 button[class=btn-contact]:hover {
     background-color: rgba(64, 82, 90, 0.452);
     color: aquamarine;
+}
+.mainSection{
+    padding-top: 70px;
+}
+#avlTree>g{
+    transform: translate(calc(50% - var(--treeSize)),40px);
+}
+@media(max-width:600px){
+    .mainSection{
+        padding-top: 100px;
+    }
+
 }

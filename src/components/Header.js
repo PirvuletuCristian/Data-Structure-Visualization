@@ -9,9 +9,9 @@ export default function Header() {
     <div className='logo'>Logo</div>
     <nav>
       <ul className='navbar'>
-        <li><Link to="/">Home</Link></li>
+        <li><Link to="/">Acasă</Link></li>
         <li><Link to="/algoritm">Algoritm</Link></li>
-        <li><Link to="/learn">Learn</Link></li>
+        <li><Link to="/learn">Învățare</Link></li>
       </ul>
     </nav>
   </header>

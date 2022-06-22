@@ -6,8 +6,8 @@ export default function Algoritm() {
     <section>
     <div className='content-algoritm'>
     <ul>
-      <li><Link to="/BST">Arbori binari de cautare</Link></li>
-      <li><Link to="/BTree">Arbori B</Link></li>
+      <li><Link to="/BST">BST</Link></li>
+      <li><Link to="/avl">AVL</Link></li>
     </ul>
     </div>
     </section>

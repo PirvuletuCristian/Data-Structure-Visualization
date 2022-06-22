@@ -1,7 +1,7 @@
-import {useState, useEffect} from 'react';
-import * as d3 from 'd3';
+import React, { useEffect, useState } from 'react';
+import * as d3 from "d3";
 
-const BST = () => {
+const AVL = () => {
     const [svg, setSvg] = useState(null)
     const [g, setG] = useState(null)
     var oldPos = {};
@@ -38,10 +38,28 @@ const BST = () => {
     var duration = 400;
 
     var tree = d3.tree().separation(function () { return 40; });
+    
 
     var changeRoot = false;
 
+    // Find tree's height
+    var findHeight = function (node) {
+        if (node.data === null || !node) return 0;
+        else {
+            var left = node.children[0] ? findHeight(node.children[0]) : 0;
+            var right = node.children[1] ? findHeight(node.children[1]) : 0;
+            return 1 + ((left > right) ? left : right);
+        }
+    };
+
     var findNode = function (n) {
+        //console.log("yoyo");
+        // if (!n || !Number.isInteger(n)) return false;
+        // if (!data.data) {
+        //     console.log("not found");
+        //     return false;
+        // }
+        //console.log('searching');
 
         var walker = data;
 
@@ -69,6 +87,269 @@ const BST = () => {
         }
         //console.log(found);
         return found;
+    };
+
+
+    var inorder = function () {
+        var traversal = [];
+        var walker = data;
+        inorderUtil(walker, traversal);
+        var i = traversal.toString();
+        i = 'Parcurgere inordine: ' + i;
+        document.getElementById("state").innerHTML = i;
+        // confirm(i);
+    }
+
+    var inorderUtil = function (walker, traversal) {
+        if (walker.children.length !== 0) {
+            if (walker.children[0].data !== null) {
+                inorderUtil(walker.children[0], traversal);
+            }
+        }
+        // console.log(walker.data);
+        traversal.push(walker.data);
+        if (walker.children.length !== 0) {
+            if (walker.children[1].data !== null) {
+                inorderUtil(walker.children[1], traversal);
+            }
+        }
+    }
+
+
+    var preorder = function () {
+        var traversal = [];
+        var walker = data;
+        preorderUtil(walker, traversal);
+        var p = traversal.toString();
+        p = 'Parcurgere preordine: ' + p;
+        document.getElementById("state").innerHTML = p;
+        // confirm(p);
+    }
+
+    var preorderUtil = function (walker, traversal) {
+        traversal.push(walker.data);
+        if (walker.children.length === 0) {
+            return;
+        }
+        if (walker.children[0].data !== null) {
+            preorderUtil(walker.children[0], traversal);
+        }
+        if (walker.children[1].data !== null) {
+            preorderUtil(walker.children[1], traversal);
+        }
+    }
+
+
+    var postorder = function () {
+        var traversal = [];
+        var walker = data;
+        postorderUtil(walker, traversal);
+        var s = traversal.toString();
+        s = 'Parcurgere postordine: ' + s;
+        document.getElementById("state").innerHTML = s;
+        // confirm(s);
+    }
+
+    var postorderUtil = function (walker, traversal) {
+        if (walker.children.length !== 0) {
+            if (walker.children[0].data !== null) {
+                postorderUtil(walker.children[0], traversal);
+            }
+        }
+        if (walker.children.length !== 0) {
+            if (walker.children[1].data !== null) {
+                postorderUtil(walker.children[1], traversal);
+            }
+        }
+        traversal.push(walker.data);
+    }
+    // Binary Search Tree rotation
+    var rotateLeft = function (node, callback) {
+        var parent = node.parent,
+            rightChild = node.children[1];
+
+        if (rightChild.children.length === 0) {
+            rightChild.children.push({ id: id++, data: null, parent: rightChild, children: [] });
+            rightChild.children.push({ id: id++, data: null, parent: rightChild, children: [] });
+        }
+
+        if (parent === null) { // Root node
+            rightChild.children[0].parent = node;
+            node.children[1] = rightChild.children[0];
+
+            node.parent = rightChild;
+            rightChild.children[0] = node;
+
+            rightChild.parent = parent;
+            data = rightChild;
+
+            gLinks.selectAll('path').filter(function (d) { // Update root node
+                return d.data.id === node.parent.id;
+            }).datum(d3.hierarchy(node).descendants()[0]);
+            changeRoot = true;
+
+        } else if (node === parent.children[0]) { // Left child of parent
+            rightChild.children[0].parent = node;
+            node.children[1] = rightChild.children[0];
+
+            node.parent = rightChild;
+            rightChild.children[0] = node;
+
+            rightChild.parent = parent;
+            parent.children[0] = rightChild;
+
+            changeRoot = false;
+
+        } else if (node === parent.children[1]) { // Right child of parent
+            rightChild.children[0].parent = node;
+            node.children[1] = rightChild.children[0];
+
+            node.parent = rightChild;
+            rightChild.children[0] = node;
+
+            rightChild.parent = parent;
+            parent.children[1] = rightChild;
+
+            changeRoot = false;
+        }
+
+        if (node.children.length !== 0 && node.children[0].data === null && node.children[1].data === null) node.children = [];
+
+        setTimeout(function () {
+            if (callback instanceof Function) {
+                callback();
+            }
+        }, duration);
+
+    };
+
+    var rotateRight = function (node, callback) {
+        var parent = node.parent,
+            leftChild = node.children[0];
+
+        if (leftChild.children.length === 0) {
+            leftChild.children.push({ id: id++, data: null, parent: leftChild, children: [] });
+            leftChild.children.push({ id: id++, data: null, parent: leftChild, children: [] });
+        }
+
+        if (parent === null) { // Root node
+            leftChild.children[1].parent = node;
+            node.children[0] = leftChild.children[1];
+
+            node.parent = leftChild;
+            leftChild.children[1] = node;
+
+            leftChild.parent = parent;
+            data = leftChild;
+
+            gLinks.selectAll('path').filter(function (d) { // Update root node's link
+                return d.data.id === node.parent.id;
+            }).datum(d3.hierarchy(node).descendants()[0]);
+            changeRoot = true;
+
+        } else if (node === parent.children[0]) { // Left child of parent
+            leftChild.children[1].parent = node;
+            node.children[0] = leftChild.children[1];
+
+            node.parent = leftChild;
+            leftChild.children[1] = node;
+
+            leftChild.parent = parent;
+            parent.children[0] = leftChild;
+
+            changeRoot = false;
+
+        } else if (node === parent.children[1]) { // Left child of parent
+            leftChild.children[1].parent = node;
+            node.children[0] = leftChild.children[1];
+
+            node.parent = leftChild;
+            leftChild.children[1] = node;
+
+            leftChild.parent = parent;
+            parent.children[1] = leftChild;
+
+            changeRoot = false;
+        }
+
+        if (node.children.length !== 0 && node.children[0].data === null && node.children[1].data === null) node.children = [];
+
+        setTimeout(function () {
+            if (callback instanceof Function) {
+                callback();
+            }
+        }, duration);
+    };
+
+    // Node highlight for better visualization
+    var highlight = function (node) {
+        var hlNode = gNodes.selectAll('circle').filter(function (d) {
+            return d.data.id === node.id;
+        });
+        hlNode.transition()
+            .duration(duration / 3)
+            .style('stroke', '#e74c3c')
+            .style('stroke-width', '3.5px');
+    };
+
+    var removeHighlight = function (node) {
+        var hlNode = gNodes.selectAll('circle').filter(function (d) {
+            return d.data.id === node.id;
+        });
+        hlNode.transition()
+            .duration(duration / 3)
+            .style('stroke', '#247d24')
+            .style('stroke-width', '2.5px');
+    };
+
+    // AVL Tree balancing
+    var balance = function (node, callback) {
+        highlight(node);
+        var hLeft = node.children[0] ? findHeight(node.children[0]) : 0;
+        var hRight = node.children[1] ? findHeight(node.children[1]) : 0;
+        var hl, hr,
+            defer = 0.5;
+        if (hLeft - hRight >= 2) { // Left unbalance
+            var leftChild = node.children[0];
+            hl = leftChild.children[0] ? findHeight(leftChild.children[0]) : 0;
+            hr = leftChild.children[1] ? findHeight(leftChild.children[1]) : 0;
+            if (hl >= hr) { // Left of left
+                rotateRight(node, updateTree);
+                defer = 1;
+            } else { // Right of left
+                defer = 3;
+                rotateLeft(leftChild, function () {
+                    updateTree();
+                    setTimeout(function () {
+                        rotateRight(node, updateTree);
+                    }, duration);
+                });
+            }
+        } else if (hRight - hLeft >= 2) { // Right unbalance
+            // rotated = false;
+            // isChanged = true;
+            var rightChild = node.children[1];
+            hl = rightChild.children[0] ? findHeight(rightChild.children[0]) : 0;
+            hr = rightChild.children[1] ? findHeight(rightChild.children[1]) : 0;
+            if (hr >= hl) { // Right of right
+                rotateLeft(node, updateTree);
+                defer = 1;
+            } else { // Left of right
+                defer = 3;
+                rotateRight(rightChild, function () {
+                    updateTree();
+                    setTimeout(function () {
+                        rotateLeft(node, updateTree);
+                    }, duration);
+                });
+            }
+        }
+        setTimeout(function () {
+            removeHighlight(node);
+            if (!node.parent) { // End balancing
+                if (callback instanceof Function) callback();
+            } else balance(node.parent, callback);
+        }, duration * defer);
     };
 
     // Tree insertion
@@ -109,9 +390,11 @@ const BST = () => {
                 }
             }
         }
-
         updateTree();
-        setTimeout(callback);
+        setTimeout(function () {
+            balance(newNode, callback);
+            //callback();
+        }, duration);
     };
 
     // Tree deletion
@@ -120,6 +403,7 @@ const BST = () => {
         var walker = data,
             nodeDelete = null, // Node to be deleted
             nodeReplace = null, // Node to replace deleted node
+            nodeBalance = null, // After deleting, perform balance on this node to root
             parent;
 
         // Find node
@@ -143,6 +427,7 @@ const BST = () => {
                     }
 
                     parent = nodeReplace.parent;
+                    nodeBalance = parent; // Will start balacing from this node
 
                     if (parent.children[0] === nodeReplace) {
                         if (nodeReplace.children[0]) {
@@ -184,7 +469,8 @@ const BST = () => {
 
             updateTree();
             setTimeout(function () {
-                if (callback instanceof Function) callback();
+                if (nodeBalance) balance(nodeBalance, callback);
+                else if (callback instanceof Function) callback();
             }, duration);
             return true;
         }
@@ -204,6 +490,7 @@ const BST = () => {
         // Deletion
         if (nodeDelete.children.length === 0) { // Node to be deleted is leaf node
             parent = nodeDelete.parent;
+            nodeBalance = parent; // Will start balacing from this node
 
             if (parent.children[0] === nodeDelete) { // Remove left child
                 parent.children[0] = { id: id++, data: null, parent: parent, children: [] }; // Empty child
@@ -223,6 +510,7 @@ const BST = () => {
 
             if (!nodeReplace) { // No left child, right child of nodeDelete replace its position
                 parent = nodeDelete.parent;
+                nodeBalance = parent; // Will start balacing from this node
 
                 nodeDelete.children[1].parent = parent;
                 if (parent.children[0] === nodeDelete) parent.children[0] = nodeDelete.children[1]; // Left child of parent
@@ -230,6 +518,7 @@ const BST = () => {
             } else {
                 // Update nodeReplace's parent
                 parent = nodeReplace.parent;
+                nodeBalance = parent; // Will start balacing from this node
 
                 if (parent.children[0] === nodeReplace) {
                     if (nodeReplace.children[0]) {
@@ -268,10 +557,13 @@ const BST = () => {
 
         updateTree();
         setTimeout(function () {
-            if (callback instanceof Function) callback();
+            if (nodeBalance) balance(nodeBalance, callback);
+            else if (callback instanceof Function) callback();
         }, duration);
         return true;
     };
+    /*************Binary Search Tree Visualization using D3JS *************/
+
 
     var updateTree = function () {
         var root = d3.hierarchy(data);
@@ -382,80 +674,6 @@ const BST = () => {
             .text(function (d) { return d.data.data; });
     };
 
-    var inorder = function () {
-        var traversal = [];
-        var walker = data;
-        inorderUtil(walker, traversal);
-        var i = traversal.toString();
-        i = 'Parcurgere inordine: ' + i;
-        document.getElementById("state").innerHTML = i;
-        // confirm(i);
-    }
-
-    var inorderUtil = function (walker, traversal) {
-        if (walker.children.length !== 0) {
-            if (walker.children[0].data !== null) {
-                inorderUtil(walker.children[0], traversal);
-            }
-        }
-        // console.log(walker.data);
-        traversal.push(walker.data);
-        if (walker.children.length !== 0) {
-            if (walker.children[1].data !== null) {
-                inorderUtil(walker.children[1], traversal);
-            }
-        }
-    }
-
-
-    var preorder = function () {
-        var traversal = [];
-        var walker = data;
-        preorderUtil(walker, traversal);
-        var p = traversal.toString();
-        p = 'Parcurgere preordine: ' + p;
-        document.getElementById("state").innerHTML = p;
-        // confirm(p);
-    }
-
-    var preorderUtil = function (walker, traversal) {
-        traversal.push(walker.data);
-        if (walker.children.length === 0) {
-            return;
-        }
-        if (walker.children[0].data !== null) {
-            preorderUtil(walker.children[0], traversal);
-        }
-        if (walker.children[1].data !== null) {
-            preorderUtil(walker.children[1], traversal);
-        }
-    }
-
-
-    var postorder = function () {
-        var traversal = [];
-        var walker = data;
-        postorderUtil(walker, traversal);
-        var s = traversal.toString();
-        s = 'Parcurgere postordine: ' + s;
-        document.getElementById("state").innerHTML = s;
-        // confirm(s);
-    }
-
-    var postorderUtil = function (walker, traversal) {
-        if (walker.children.length !== 0) {
-            if (walker.children[0].data !== null) {
-                postorderUtil(walker.children[0], traversal);
-            }
-        }
-        if (walker.children.length !== 0) {
-            if (walker.children[1].data !== null) {
-                postorderUtil(walker.children[1], traversal);
-            }
-        }
-        traversal.push(walker.data);
-    }
-
     var handleInsert = function (event) {
         event.preventDefault()
         var num = document.getElementById('insertInput').value;
@@ -519,6 +737,8 @@ const BST = () => {
         var message;
         if (getval === true) {
             message = 'Found ' + num;
+            // console.log(message);
+            // confirm("Found");
         } else {
             message = num + ' not found';
         }
@@ -527,9 +747,8 @@ const BST = () => {
         form.reset();
         return false;
     };
-    
-  return (
-    <div className='container-fluid'>
+    return (
+        <div className='container-fluid'>
             <div className='row my-3'>
                 <form id="insertTree" className='col' onSubmit={handleInsert}>
                     <input id="insertInput" className="col-xs-2" type="text" placeholder="Număr de adăugat" maxLength="4" size="14" />
@@ -555,13 +774,13 @@ const BST = () => {
                 </div>
                 <div className='mx-2'>
                     <button type="button" className="btn btn-secondary my-2 my-sm-0 " id="postorder" onClick={postorder}>Postordine</button>
+
                 </div>
-                
                 <p id="state"></p>
             </div>
             <svg id="avlTree"></svg>
         </div>
-  );
-}
+    );
+};
 
-export default BST;
+export default AVL;
