@@ -1,5 +1,6 @@
 import React from 'react'
 import './docStyle.css'
+import {Link} from 'react-router-dom';
 
 export default function BSTDoc() {
   return (
@@ -12,14 +13,22 @@ export default function BSTDoc() {
                             <span class="navbar-toggler-icon"><i class="fas fa-bars"></i></span>
                         </button>
           <div class="collapse navbar-collapse" id="navMini">
-            <ul class="nav flex-column mt-4">
+            <ol class="nav flex-column mt-4">
               <li class="nav-item"><a class="nav-link" href="#ArboriBinari">Arbori Binari</a></li>
               <li class="nav-item"><a class="nav-link" href="#ParcurgereaArborilor">Parcurgerea Arborilor</a></li>
               <li class="nav-item"><a class="nav-link" href="#Javascript_and_Java">JavaScript and Java</a></li>
               <li class="nav-item"><a class="nav-link" href="#Hello_world">Hello world</a></li>
               <li class="nav-item"><a class="nav-link" href="#Variables">Variables</a></li>
               <li class="nav-item"><a class="nav-link" href="#Declaring_variables">Declaring variables</a></li>
-            </ul>
+              <li class="nav-item"><a class="nav-link" href="#Declaring_variables">Declaring variables</a></li>
+              <li class="nav-item"><a class="nav-link" href="#Declaring_variables">Declaring variables</a></li>
+              <li class="nav-item"><a class="nav-link" href="#Declaring_variables">Declaring variables</a></li>
+              <li class="nav-item"><a class="nav-link" href="#Declaring_variables">Declaring variables</a></li>
+              <li class="nav-item"><a class="nav-link" href="#Declaring_variables">Declaring variables</a></li>
+              <li class="nav-item"><a class="nav-link" href="#Declaring_variables">Declaring variables</a></li>
+              <li class="nav-item"><a class="nav-link" href="#Variables">Variables</a></li>
+              <li class="nav-item"><a class="nav-link" href="#Declaring_variables">Declaring variables</a></li>
+            </ol>
           </div>
         </nav>
       </div>
@@ -39,7 +48,7 @@ export default function BSTDoc() {
               <li>nodul stâng</li>
               <li>nodul drept</li>
               <br />
-              <button>Chestionar</button>
+              <button><Link to="/ArboriBinari">Chestionar</Link></button>
             </article>
           </div>
           <div class="main-section" id="ParcurgereaArborilor">
